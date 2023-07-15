@@ -144,7 +144,7 @@ def page_question_change():
         question1 = st.subheader("Question 1")
         question1.write(list(st.session_state['questions_and_options_dict'].keys())[0])
         # options1 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[0][0])
-        options1 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[0][0])
+        options1 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[0][0])
         if st.button("Next"):
             st.session_state['total_questions'] += 1
             if options1 == list(st.session_state['questions_and_options_dict'].values())[0][1]:
@@ -160,7 +160,7 @@ def page_question_change():
         question2 = st.subheader("Question 2")
         question2.write(list(st.session_state['questions_and_options_dict'].keys())[1])
         # options2 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[1][0])
-        options2 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[1][0])
+        options2 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[1][0])
         if st.button("Next"):
             st.session_state['total_questions'] += 1
             if options2 == list(st.session_state['questions_and_options_dict'].values())[1][1]:
@@ -176,7 +176,7 @@ def page_question_change():
         question3 = st.subheader("Question 3")
         question3.write(list(st.session_state['questions_and_options_dict'].keys())[2])
         # options3 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[2][0])
-        options3 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[2][0])
+        options3 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[2][0])
         if st.button("Next"):
             st.session_state['total_questions'] += 1
             if options3 == list(st.session_state['questions_and_options_dict'].values())[2][1]:
@@ -189,7 +189,7 @@ def page_question_change():
         question4 = st.subheader("Question 4")
         question4.write(list(st.session_state['questions_and_options_dict'].keys())[3])
         # options4 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[3][0])
-        options4 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[3][0])
+        options4 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[3][0])
         if st.button("Next"):
             st.session_state['total_questions'] += 1
             if options4 == list(st.session_state['questions_and_options_dict'].values())[3][1]:
@@ -202,7 +202,7 @@ def page_question_change():
         question5 = st.subheader("Question 5")
         question5.write(list(st.session_state['questions_and_options_dict'].keys())[4])
         # options5 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[4][0])
-        options5 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[4][0])
+        options5 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[4][0])
         if st.button("Submit Quiz"):
             st.session_state['total_questions'] += 1
             if options5 == list(st.session_state['questions_and_options_dict'].values())[4][1]:
@@ -290,6 +290,18 @@ def page_rewards():
     if st.button("Quit"):
         st.session_state.clear()
         st.stop()
+    
+    if st.session_state['member'] == "Subscriber":
+        st.info("As a valued User, we appreciate your active participation \n This is designed to help you with prepration and award you with rewards!")
+    else:
+        st.info("Not interested in playing again? \n Explore Chegg's vast educational resources on our website \n [Visit Chegg](https://www.chegg.com)")
+
+
+    if st.session_state['member'] == 'Subscriber':
+        st.info("Explore Chegg's vast collection of eTextbooks related to the topic of the question asked in the quiz \n [Chegg Textbooks Link](https://www.chegg.com/etextbooks)")
+        st.info("Feeling down or need mental health support? Chegg cares about your well-being. Find helpful resources and information in our Mental Health section: \n [Mental Health Resources](https://www.chegg.com/life)")
+    else:
+        st.info("After joining us , you can explore vast categories of resources availiable related to the topics asked in the quiz: \n [Chegg Textbooks](https://www.chegg.com/etextbooks)\n If you have any questions or need assistance, our support team is here to help: \n [Contact Support](mailto:support@example.com)")
 
 def main():
 
@@ -298,7 +310,7 @@ def main():
     <style>
     body {
         background-color: #ffffff; /* Set the background color to white */
-        color: #ff6600; /* Set the text color to Chegg's orange color */
+        color: #eb7100; /* Set the text color to Chegg's orange color */
     }
     .stButton button {
         background-color: #ff8a00; /* Set the button background color to Chegg's orange color */
