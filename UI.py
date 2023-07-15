@@ -9,7 +9,7 @@ import os
 
 st.set_page_config(layout="wide", page_title="Chegg IntelliPlay", page_icon="🎮")
 
-openai.api_key = st.secrets["API-KEY"]["api_key"]
+openai.api_key = st.secrets.KEY.api_key
 
 subject_mappings = {2: "Physics",
 3: "Computer Science",
