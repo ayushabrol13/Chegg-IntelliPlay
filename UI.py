@@ -13,7 +13,7 @@ st.set_page_config(layout="wide", page_title="Chegg IntelliPlay", page_icon="ðŸŽ
     })
 
 # Fetch key from toml file
-with open("./.streamlit/config.toml") as f:
+with open("config.toml") as f:
     data = toml.load(f)
     openai.api_key = data["openai"]["api_key"]
 
