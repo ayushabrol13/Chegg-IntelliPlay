@@ -273,7 +273,7 @@ def page_question_details_member():
             st.experimental_rerun()
     with col2:
         if st.button("[Subscribe](https://www.chegg.com/study)"):
-            st.button("[Subscribe](https://www.chegg.com/study)")
+            st.session_state.clear()
             
     
 def page_rewards():
@@ -289,10 +289,10 @@ def page_rewards():
     col1, col2 = st.columns([1, 1])
     with col1:     
         if st.button("[Play Again](https://chegg-intelliplay.streamlit.app/#welcome-to-chegg-intelliplay)"):
-            st.button("[Play Again](https://chegg-intelliplay.streamlit.app/#welcome-to-chegg-intelliplay)")
+            st.session_state.clear()
     with col2:
         if st.button("[Quit](https://www.chegg.com)"):
-            st.button("[Quit](https://www.chegg.com)")
+            st.session_state.clear()
     
     if st.session_state['member'] == "Subscriber":
         st.info("As a valued User, we appreciate your active participation \n This is designed to help you with prepration and award you with rewards!")
