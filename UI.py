@@ -9,60 +9,7 @@ import os
 
 st.set_page_config(layout="wide", page_title="Chegg IntelliPlay", page_icon="🎮")
 
-# Fetch key from toml file
-# with open("config.toml") as f:
-#     data = toml.load(f)
-#     openai.api_key = data["openai"]["api_key"]
-openai.api_key = os.getenv("api_key")
-
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #ffffff; /* Set the background color to white */
-        color: #ff6600; /* Set the text color to Chegg's orange color */
-    }
-    .stButton button {
-        background-color: #ff8a00; /* Set the button background color to Chegg's orange color */
-        color: #ffffff; /* Set the button text color to white */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
-# Convert the logo image to the desired format (e.g., PNG)
-# logo_image = Image.open("hackathon/logo.jpeg")
-# logo_image = logo_image.convert("RGB")
-# logo_image.save("hackathon/logo.png", format="PNG")
-
-# Add custom CSS styles
-# st.markdown(
-#     """
-#     <style>
-#     body {
-#         background-color: #ffffff; /* Set the background color to white */
-#         color: #ff6600; /* Set the text color to Chegg's orange color */
-#         position: relative; /* Set the body position to relative */
-#     }
-#     .stButton button {
-#         background-color: #ff8a00; /* Set the button background color to Chegg's orange color */
-#         color: #ffffff; /* Set the button text color to white */
-#     }
-#     .logo {
-#         position: absolute; /* Set the logo position to absolute */
-#         top: 10px; /* Adjust the top position of the logo */
-#         right: 10px; /* Adjust the right position of the logo */
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
-
-# Display the logo image at the top right
-# st.image("logo.png", use_column_width=False, width=100, output_format="PNG", 
-#          caption="Logo", output_class="logo")
+openai.api_key = st.secrets["API-KEY"]["api_key"]
 
 subject_mappings = {2: "Physics",
 3: "Computer Science",
@@ -338,7 +285,21 @@ def page_rewards():
         st.stop()
 
 def main():
-    
+    st.markdown(
+    """
+    <style>
+    body {
+        background-color: #ffffff; /* Set the background color to white */
+        color: #ff6600; /* Set the text color to Chegg's orange color */
+    }
+    .stButton button {
+        background-color: #ff8a00; /* Set the button background color to Chegg's orange color */
+        color: #ffffff; /* Set the button text color to white */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True)
+
     image = Image.open('assets/header.png')
     st.image(image, use_column_width=True)
     if 'name' not in st.session_state:
