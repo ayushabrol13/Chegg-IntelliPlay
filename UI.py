@@ -282,7 +282,7 @@ def page_rewards():
     if st.session_state['score'] > 0:
         st.balloons()
         st.header(f"Congratulations, {st.session_state['name']}!")
-        st.write("You have earned **reward_points** reward points for correctly answering **st.session_state['score']** questions.")
+        st.write(f"You have earned **{reward_points}** reward points for correctly answering **{st.session_state['score']}** questions.")
     else:
         st.write("Thanks for playing, ", st.session_state['name'], "!")
         st.write("Play again and earn reward points for correctly answering questions.")
