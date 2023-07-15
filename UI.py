@@ -5,18 +5,15 @@ import random
 import json
 from PIL import Image
 import toml
+import os
 
-st.set_page_config(layout="wide", page_title="Chegg IntelliPlay", page_icon="🎮", menu_items={
-        'Get Help': 'https://www.extremelycoolapp.com/help',
-        'Report a bug': "https://www.extremelycoolapp.com/bug",
-        'About': "# This is a header. This is an *extremely* cool app!"
-    })
+st.set_page_config(layout="wide", page_title="Chegg IntelliPlay", page_icon="🎮")
 
 # Fetch key from toml file
-with open("config.toml") as f:
-    data = toml.load(f)
-    openai.api_key = data["openai"]["api_key"]
-
+# with open("config.toml") as f:
+#     data = toml.load(f)
+#     openai.api_key = data["openai"]["api_key"]
+openai.api_key = os.getenv("api_key")
 
 st.markdown(
     """
