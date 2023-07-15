@@ -98,15 +98,6 @@ def page_name_input():
             if st.button("Subscribe"):
                 st.session_state.clear()
                 st.experimental_rerun()
-              # if st.button("Subscribe to Chegg"):
-                    # st.markdown(
-                    # """
-                    # <button onclick="window.open('https://www.chegg.com/subscribe/', '_blank')">Subscribe to Chegg</button>
-                    # """,
-                    # unsafe_allow_html=True
-                    # )
-                    # st.session_state.clear()
-                    # st.stop()
     elif member == "Member":
         st.write("Welcome", name)
         if st.button("Next"):
@@ -236,6 +227,7 @@ def page_question_details():
     st.markdown("Your Answer: " + st.session_state['options5'])
 
     if st.button("View earned rewards"):
+        st.session_state['visited'] = True
         st.experimental_rerun()
     
 
@@ -276,15 +268,17 @@ def page_rewards():
         st.header(f"Congratulations, {st.session_state['name']}!")
         st.write("You have earned", reward_points, "reward points for correctly answering", st.session_state['score'], "questions.")
     else:
+        st.write("Thanks for playing, ", st.session_state['name'], "!")
         st.write("Play again and earn reward points for correctly answering questions.")
     if st.button("Play Again"):
         st.session_state.clear()
         st.experimental_rerun()
-    elif st.button("Quit"):
+    if st.button("Quit"):
         st.session_state.clear()
         st.stop()
 
 def main():
+
     st.markdown(
     """
     <style>
@@ -308,12 +302,12 @@ def main():
         page_subject_difficulty()
     elif 'total_questions' not in st.session_state:
         page_quiz_question()
-    elif (st.session_state['total_questions'] >= 0 and st.session_state['total_questions'] < 5):
-        if st.session_state['member'] == "Member" and st.session_state['total_questions'] == 3 and 'visited' not in st.session_state:
+    elif (st.session_state['total_questions'] >= 0 and st.session_state['total_questions'] < 5 and 'visited' not in st.session_state):
+        if st.session_state['member'] == "Member" and st.session_state['total_questions'] == 3:
             page_question_details_member()
         else:
             page_question_change()
-    elif st.session_state['total_questions'] == 5:
+    elif st.session_state['total_questions'] == 5 and 'visited' not in st.session_state:
         page_question_details()
     elif 'reward_points' not in st.session_state:
         page_rewards()
