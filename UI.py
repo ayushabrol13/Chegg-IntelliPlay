@@ -93,7 +93,7 @@ def page_name_input():
                 st.experimental_rerun()
         # If the subscription code is incorrect, tell the user that the code is incorrect
         else:
-            st.write("Incorrect Subscription email. Please try again with a valid Subscription email ID or subscribe to Chegg to play as a Subscriber.")
+            st.write("Please enter a valid subscription ID.")
             if st.button("Subscribe"):
                 st.session_state.clear()
                 st.experimental_rerun()
