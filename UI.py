@@ -137,6 +137,10 @@ def page_question_change():
     st.header(f"Welcome, {st.session_state['name']}!")
     st.write("Instructions: Answer the following multiple-choice questions and earn rewards after finishing the quiz.")
     if st.session_state['total_questions'] == 0:
+        if st.session_state['member'] == "Member":
+            st.info("Showing Question 1 of 3")
+        elif st.session_state['member'] == "Subscriber":
+            st.info("Showing Question 1 of 5")
         question1 = st.subheader("Question 1")
         question1.write(list(st.session_state['questions_and_options_dict'].keys())[0])
         # options1 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[0][0])
@@ -149,6 +153,10 @@ def page_question_change():
             st.experimental_rerun()
 
     if st.session_state['total_questions'] == 1:
+        if st.session_state['member'] == "Member":
+            st.info("Showing Question 2 of 3")
+        elif st.session_state['member'] == "Subscriber":
+            st.info("Showing Question 2 of 5")
         question2 = st.subheader("Question 2")
         question2.write(list(st.session_state['questions_and_options_dict'].keys())[1])
         # options2 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[1][0])
@@ -161,6 +169,10 @@ def page_question_change():
             st.experimental_rerun()
 
     elif st.session_state['total_questions'] == 2:
+        if st.session_state['member'] == "Member":
+            st.info("Showing Question 3 of 3")
+        elif st.session_state['member'] == "Subscriber":
+            st.info("Showing Question 3 of 5")
         question3 = st.subheader("Question 3")
         question3.write(list(st.session_state['questions_and_options_dict'].keys())[2])
         # options3 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[2][0])
@@ -173,6 +185,7 @@ def page_question_change():
             st.experimental_rerun()
 
     elif st.session_state['total_questions'] == 3:
+        st.info("Showing Question 4 of 5")
         question4 = st.subheader("Question 4")
         question4.write(list(st.session_state['questions_and_options_dict'].keys())[3])
         # options4 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[3][0])
@@ -185,6 +198,7 @@ def page_question_change():
             st.experimental_rerun()
 
     elif st.session_state['total_questions'] == 4:
+        st.info("Showing Question 5 of 5")
         question5 = st.subheader("Question 5")
         question5.write(list(st.session_state['questions_and_options_dict'].keys())[4])
         # options5 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[4][0])
