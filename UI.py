@@ -1,0 +1,372 @@
+import streamlit as st
+import pandas as pd
+import openai
+import random
+import json
+from PIL import Image
+import toml
+
+st.set_page_config(layout="wide", page_title="Chegg IntelliPlay", page_icon="🎮", menu_items={
+        'Get Help': 'https://www.extremelycoolapp.com/help',
+        'Report a bug': "https://www.extremelycoolapp.com/bug",
+        'About': "# This is a header. This is an *extremely* cool app!"
+    })
+
+# Fetch key from toml file
+with open("./.streamlit/config.toml") as f:
+    data = toml.load(f)
+    openai.api_key = data["openai"]["api_key"]
+
+
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #ffffff; /* Set the background color to white */
+        color: #ff6600; /* Set the text color to Chegg's orange color */
+    }
+    .stButton button {
+        background-color: #ff8a00; /* Set the button background color to Chegg's orange color */
+        color: #ffffff; /* Set the button text color to white */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# Convert the logo image to the desired format (e.g., PNG)
+# logo_image = Image.open("hackathon/logo.jpeg")
+# logo_image = logo_image.convert("RGB")
+# logo_image.save("hackathon/logo.png", format="PNG")
+
+# Add custom CSS styles
+# st.markdown(
+#     """
+#     <style>
+#     body {
+#         background-color: #ffffff; /* Set the background color to white */
+#         color: #ff6600; /* Set the text color to Chegg's orange color */
+#         position: relative; /* Set the body position to relative */
+#     }
+#     .stButton button {
+#         background-color: #ff8a00; /* Set the button background color to Chegg's orange color */
+#         color: #ffffff; /* Set the button text color to white */
+#     }
+#     .logo {
+#         position: absolute; /* Set the logo position to absolute */
+#         top: 10px; /* Adjust the top position of the logo */
+#         right: 10px; /* Adjust the right position of the logo */
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
+
+# Display the logo image at the top right
+# st.image("logo.png", use_column_width=False, width=100, output_format="PNG", 
+#          caption="Logo", output_class="logo")
+
+subject_mappings = {2: "Physics",
+3: "Computer Science",
+4: "Electrical Engineering",
+5: "Mechanical Engineering",
+6: "Chemistry",
+7: "Algebra",
+8: "Calculus",
+9: "Statistics and Probability",
+10: "Advanced Math",
+12: "Other Math",
+13: "Biology",
+14: "Civil Engineering",
+18: "Finance",
+19: "Economics",
+20: "Accounting",
+26: "Poetry",
+27: "Literature",
+33: "American History",
+34: "European History",
+35: "World History",
+39: "Psychology",
+40: "Sociology",
+41: "Anthropology",
+42: "Political Science",
+43: "International Relations",
+45: "Other",
+46: "Prewriting",
+47: "Postwriting",
+48: "Geometry",
+49: "Trigonometry",
+50: "Prealgebra",
+51: "Precalculus",
+52: "Philosophy",
+53: "Operations Management",
+54: "Communications",
+55: "Earth Sciences",
+56: "Advanced Physics",
+57: "Chemical Engineering",
+58: "Nursing",
+59: "Anatomy and Physiology"}
+
+def chatWithGPT(prompt):
+  completion = openai.ChatCompletion.create(
+  model="gpt-3.5-turbo",
+  messages=[
+  {"role": "user", "content": prompt}
+  ]
+  )
+  return completion.choices[0].message.content
+
+def generate_question():
+    response = chatWithGPT(
+        "Generate 10 different multiple-choice questions, each with 4 options. The questions should cover various topics from the selected subjects: "
+        + str(st.session_state['subject_list'])
+        + ". Set the difficulty level to "
+        + st.session_state['difficulty']
+        + ". Return the output in a dictionary format, where each question is a key, and the corresponding value is a tuple containing the options and the correct answer."
+        + "Return only the dictionary in the output and nothing else."
+        + "Do not return a sample output. Generate real questions."
+    )
+    return response
+    
+
+def page_name_input():
+    st.title("Welcome to Chegg IntelliPlay!")
+    st.header("Enter Your Name", anchor="center")
+    name = st.text_input("Name")
+    # Ask whether the user is a member or not
+    member_sub = st.subheader("Are you a member or a subscriber?")
+    member = member_sub.radio("", ["Member", "Subscriber"])
+
+    if member == "Subscriber":
+        subscription_code = st.text_input("Enter your Subscription email ID")
+        # If the subscription code is correct, welcome the user
+        if subscription_code == "aabrol@chegg.com":
+            st.write("Welcome", name)
+            if st.button("Next"):
+                st.session_state['name'] = name
+                st.session_state['subscription_code'] = subscription_code
+                st.session_state['member'] = member
+                st.experimental_rerun()
+        # If the subscription code is incorrect, tell the user that the code is incorrect
+        else:
+            st.write("Incorrect Subscription email. Please try again with a valid Subscription email ID or subscribe to Chegg to play as a Subscriber.")
+            if st.button("Subscribe"):
+                st.session_state.clear()
+                st.experimental_rerun()
+              # if st.button("Subscribe to Chegg"):
+                    # st.markdown(
+                    # """
+                    # <button onclick="window.open('https://www.chegg.com/subscribe/', '_blank')">Subscribe to Chegg</button>
+                    # """,
+                    # unsafe_allow_html=True
+                    # )
+                    # st.session_state.clear()
+                    # st.stop()
+    elif member == "Member":
+        st.write("Welcome", name)
+        if st.button("Next"):
+            st.session_state['name'] = name
+            st.session_state['member'] = member
+            st.experimental_rerun()
+
+def page_subject_difficulty():
+    st.title("Chegg IntelliPlay")
+    st.header("Select Subject and Difficulty", anchor="center")
+    subject_list = st.multiselect("Pick your favourite subjects (Maximum: 5)", list(subject_mappings.values()), max_selections=5)
+    difficulty = st.selectbox("Difficulty", ["Easy", "Medium", "Hard"])
+    if st.button("Start Quiz"):
+        st.session_state['subject_list'] = subject_list
+        st.session_state['difficulty'] = difficulty
+        st.experimental_rerun()
+
+def page_quiz_question():
+    # Generate question using OpenAI GPT-3.5 Turbo and display it
+    questions_and_options_dict = generate_question()    
+    
+    # Convert the string to a dictionary
+    try:
+        questions_and_options_dict = eval(questions_and_options_dict)
+        print(questions_and_options_dict)
+    except:
+        st.write("Please wait!! We are generating the questions for you.")
+        st.experimental_rerun()
+
+    st.session_state['questions_and_options_dict'] = questions_and_options_dict
+    st.session_state['score'] = 0
+    st.session_state['total_questions'] = 0
+    st.experimental_rerun()
+    
+def page_question_change():
+    st.title("Chegg IntelliPlay")
+    st.header(f"Welcome, {st.session_state['name']}!")
+    st.write("Instructions: Answer the following multiple-choice questions and earn rewards after finishing the quiz.")
+    if st.session_state['total_questions'] == 0:
+        question1 = st.subheader("Question 1")
+        question1.write(list(st.session_state['questions_and_options_dict'].keys())[0])
+        # options1 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[0][0])
+        options1 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[0][0])
+        if st.button("Next"):
+            st.session_state['total_questions'] += 1
+            if options1 == list(st.session_state['questions_and_options_dict'].values())[0][1]:
+                st.session_state['score'] += 1
+            st.session_state['options1'] = options1
+            st.experimental_rerun()
+
+    if st.session_state['total_questions'] == 1:
+        question2 = st.subheader("Question 2")
+        question2.write(list(st.session_state['questions_and_options_dict'].keys())[1])
+        # options2 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[1][0])
+        options2 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[1][0])
+        if st.button("Next"):
+            st.session_state['total_questions'] += 1
+            if options2 == list(st.session_state['questions_and_options_dict'].values())[1][1]:
+                st.session_state['score'] += 1
+            st.session_state['options2'] = options2
+            st.experimental_rerun()
+
+    elif st.session_state['total_questions'] == 2:
+        question3 = st.subheader("Question 3")
+        question3.write(list(st.session_state['questions_and_options_dict'].keys())[2])
+        # options3 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[2][0])
+        options3 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[2][0])
+        if st.button("Next"):
+            st.session_state['total_questions'] += 1
+            if options3 == list(st.session_state['questions_and_options_dict'].values())[2][1]:
+                st.session_state['score'] += 1
+            st.session_state['options3'] = options3
+            st.experimental_rerun()
+
+    elif st.session_state['total_questions'] == 3:
+        question4 = st.subheader("Question 4")
+        question4.write(list(st.session_state['questions_and_options_dict'].keys())[3])
+        # options4 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[3][0])
+        options4 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[3][0])
+        if st.button("Next"):
+            st.session_state['total_questions'] += 1
+            if options4 == list(st.session_state['questions_and_options_dict'].values())[3][1]:
+                st.session_state['score'] += 1
+            st.session_state['options4'] = options4
+            st.experimental_rerun()
+
+    elif st.session_state['total_questions'] == 4:
+        question5 = st.subheader("Question 5")
+        question5.write(list(st.session_state['questions_and_options_dict'].keys())[4])
+        # options5 = st.radio("Options", list(st.session_state['questions_and_options_dict'].values())[4][0])
+        options5 = st.selectbox("Options", list(st.session_state['questions_and_options_dict'].values())[4][0])
+        if st.button("Submit Quiz"):
+            st.session_state['total_questions'] += 1
+            if options5 == list(st.session_state['questions_and_options_dict'].values())[4][1]:
+                st.session_state['score'] += 1
+            st.session_state['options5'] = options5
+            st.experimental_rerun()
+
+def page_question_details():
+    st.header(f"Welcome, {st.session_state['name']}!")
+    st.write("Your score is:", st.session_state['score'])
+    st.write("The questions with their options and correct answers are:")
+
+    st.markdown("1. " + list(st.session_state['questions_and_options_dict'].keys())[0])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[0][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[0][1]))
+    st.markdown("Your Answer: " + st.session_state['options1'])
+
+    st.markdown("2. " + list(st.session_state['questions_and_options_dict'].keys())[1])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[1][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[1][1]))
+    st.markdown("Your Answer: " + st.session_state['options2'])
+
+    st.markdown("3. " + list(st.session_state['questions_and_options_dict'].keys())[2])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[2][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[2][1]))
+    st.markdown("Your Answer: " + st.session_state['options3'])
+
+    st.markdown("4. " + list(st.session_state['questions_and_options_dict'].keys())[3])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[3][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[3][1]))
+    st.markdown("Your Answer: " + st.session_state['options4'])
+
+    st.markdown("5. " + list(st.session_state['questions_and_options_dict'].keys())[4])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[4][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[4][1]))
+    st.markdown("Your Answer: " + st.session_state['options5'])
+
+    if st.button("View earned rewards"):
+        st.experimental_rerun()
+    
+
+def page_question_details_member():
+    st.header(f"Welcome, {st.session_state['name']}!")
+    st.write("Your score is:", st.session_state['score'])
+    st.write("The questions with their options and correct answers are:")
+
+    st.markdown("1. " + list(st.session_state['questions_and_options_dict'].keys())[0])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[0][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[0][1]))
+    st.markdown("Your Answer: " + st.session_state['options1'])
+
+    st.markdown("2. " + list(st.session_state['questions_and_options_dict'].keys())[1])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[1][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[1][1]))
+    st.markdown("Your Answer: " + st.session_state['options2'])
+
+    st.markdown("3. " + list(st.session_state['questions_and_options_dict'].keys())[2])
+    st.markdown("Options: " + str(list(st.session_state['questions_and_options_dict'].values())[2][0]))
+    st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[2][1]))
+    st.markdown("Your Answer: " + st.session_state['options3'])
+
+    st.write("To view more questions, please subscribe to Chegg.")
+
+    if st.button("View earned rewards"):
+        st.session_state['visited'] = True
+        st.experimental_rerun()
+    if st.button("Subscribe"):
+        st.session_state.clear()
+        st.stop()
+    
+def page_rewards():
+    st.session_state['reward_points'] = st.session_state['score'] * 20
+    reward_points = st.session_state['score'] * 20
+    if st.session_state['score'] > 0:
+        st.balloons()
+        st.header(f"Congratulations, {st.session_state['name']}!")
+        st.write("You have earned", reward_points, "reward points for correctly answering", st.session_state['score'], "questions.")
+    else:
+        st.write("Play again and earn reward points for correctly answering questions.")
+    if st.button("Play Again"):
+        st.session_state.clear()
+        st.experimental_rerun()
+    elif st.button("Quit"):
+        st.session_state.clear()
+        st.stop()
+
+def main():
+    
+    image = Image.open('assets/header.png')
+    st.image(image, use_column_width=True)
+    if 'name' not in st.session_state:
+        page_name_input()
+    elif 'subject_list' not in st.session_state:
+        page_subject_difficulty()
+    elif 'total_questions' not in st.session_state:
+        page_quiz_question()
+    elif (st.session_state['total_questions'] >= 0 and st.session_state['total_questions'] < 5):
+        if st.session_state['member'] == "Member" and st.session_state['total_questions'] == 3 and 'visited' not in st.session_state:
+            page_question_details_member()
+        else:
+            page_question_change()
+    elif st.session_state['total_questions'] == 5:
+        page_question_details()
+    elif 'reward_points' not in st.session_state:
+        page_rewards()
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
+
+
+
