@@ -302,6 +302,7 @@ def page_rewards():
         st.info("Feeling down or need mental health support? Chegg cares about your well-being. Find helpful resources and information in our Mental Health section: \n [Mental Health Resources](https://www.chegg.com/life)")
     else:
         st.info("After joining us , you can explore vast categories of resources availiable related to the topics asked in the quiz: \n [Chegg Textbooks](https://www.chegg.com/etextbooks)\n If you have any questions or need assistance, our support team is here to help: \n [Contact Support](mailto:support@example.com)")
+        st.info("Feeling down or need mental health support? Chegg cares about your well-being. Find helpful resources and information in our Mental Health section: \n [Mental Health Resources](https://www.chegg.com/life)")
 
 def main():
 
