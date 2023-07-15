@@ -76,7 +76,6 @@ def generate_question():
 
 def page_name_input():
     st.title("Welcome to Chegg IntelliPlay!")
-    st.header("Enter Your Name", anchor="center")
     name = st.text_input("Name")
     # Ask whether the user is a member or not
     member_sub = st.subheader("Are you a member or a subscriber?")
