@@ -110,7 +110,7 @@ def page_subject_difficulty():
     st.title("Chegg IntelliPlay")
     st.header("Select Subject and Difficulty", anchor="center")
     subject_list = st.multiselect("Pick your favourite subjects (Maximum: 5)", list(subject_mappings.values()), max_selections=5)
-    difficulty = st.selectbox("Difficulty", ["Easy", "Medium", "Hard"])
+    difficulty = st.selectbox("Difficulty", ["Very Easy", "Easy", "Medium", "Hard", "Very Hard"])
     if st.button("Start Quiz"):
         st.session_state['subject_list'] = subject_list
         st.session_state['difficulty'] = difficulty
