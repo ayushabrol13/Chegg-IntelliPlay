@@ -20,7 +20,6 @@ subject_mappings = {2: "Physics",
 8: "Calculus",
 9: "Statistics and Probability",
 10: "Advanced Math",
-12: "Other Math",
 13: "Biology",
 14: "Civil Engineering",
 18: "Finance",
@@ -36,7 +35,6 @@ subject_mappings = {2: "Physics",
 41: "Anthropology",
 42: "Political Science",
 43: "International Relations",
-45: "Other",
 46: "Prewriting",
 47: "Postwriting",
 48: "Geometry",
@@ -62,15 +60,19 @@ def chatWithGPT(prompt):
   return completion.choices[0].message.content
 
 def generate_question():
+    # print(st.session_state['subject_list'])
+    # print(st.session_state['difficulty'])
     response = chatWithGPT(
-        "Generate 10 different multiple-choice questions, each with 4 options. The questions should cover various topics from the selected subjects: "
+        "Generate 10 real different multiple-choice questions, each with 4 options such that the questions cover various topics from the subjects: "
         + str(st.session_state['subject_list'])
-        + ". Set the difficulty level to "
+        + "and set the difficulty level of the questions to "
         + st.session_state['difficulty']
-        + ". Return the output in a dictionary format, where each question is a key, and the corresponding value is a tuple containing the options and the correct answer."
-        + "Return only the dictionary in the output and nothing else."
-        + "Do not return a sample output. Generate real questions."
+        + ". Return the questions and answers in a dictionary format, where question text generated is the key (remember the keys should NOT be Question numbers and the keys should NOT be tuples), and the corresponding value to the keys should be a tuple containing (options, correct answer)"
+        + "Return only the dictionary in the output and nothing else other than the dictionary"
+        + "DO NOT return a sample output. Generate REAL QUESTIONS from the topics mentioned above."
     )
+
+
     return response
     
 
@@ -121,7 +123,7 @@ def page_quiz_question():
     # Convert the string to a dictionary
     try:
         questions_and_options_dict = eval(questions_and_options_dict)
-        print(questions_and_options_dict)
+        # print(questions_and_options_dict)
     except:
         st.write("Please wait!! We are generating the questions for you.")
         st.experimental_rerun()
