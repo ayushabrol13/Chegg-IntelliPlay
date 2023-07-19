@@ -72,9 +72,8 @@ def generate_question():
         + "DO NOT return a sample output. Generate REAL QUESTIONS from the topics mentioned above."
     )
 
-
     return response
-    
+
 
 def page_name_input():
     st.title("Welcome to Chegg IntelliPlay!")
@@ -241,10 +240,14 @@ def page_question_details():
     st.markdown("Correct Answer: " + str(list(st.session_state['questions_and_options_dict'].values())[4][1]))
     st.markdown("Your Answer: " + st.session_state['options5'])
 
+    if st.button("Mark as Flag"):
+        st.session_state['flag'] = True
+        st.experimental_rerun()
+
     if st.button("View earned rewards"):
         st.session_state['visited'] = True
         st.experimental_rerun()
-    
+
 
 def page_question_details_member():
     st.header(f"Welcome, {st.session_state['name']}!")
@@ -267,6 +270,10 @@ def page_question_details_member():
     st.markdown("Your Answer: " + st.session_state['options3'])
 
     st.write("To view more questions, please subscribe to Chegg.")
+
+    if st.button("Mark as Flag"):
+        st.session_state['flag'] = True
+        st.experimental_rerun()
 
     col1, col2 = st.columns([1, 1])
     with col1:
